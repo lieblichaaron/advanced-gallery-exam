@@ -22,12 +22,12 @@ class Image extends React.Component {
   }
 
   calcImageSize() {
-    const {galleryWidth} = this.props;
+    const galleryWidth = document.body.clientWidth;
     const targetSize = 200;
     const imagesPerRow = Math.round(galleryWidth / targetSize);
-    const size = (galleryWidth / imagesPerRow);
+    const size = galleryWidth / imagesPerRow;
     this.setState({
-      size
+      size,
     });
   }
   closeModal() {
@@ -35,8 +35,11 @@ class Image extends React.Component {
   }
   componentDidMount() {
     this.calcImageSize();
+    window.addEventListener("resize", this.calcImageSize);
   }
-
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.calcImageSize);
+  }
   urlFromDto(dto) {
     return `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`;
   }
