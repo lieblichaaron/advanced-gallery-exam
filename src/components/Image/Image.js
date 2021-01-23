@@ -73,10 +73,10 @@ class Image extends React.Component {
           ></img>
         </Modal>
         <div style={{ position: "absolute", display: "flex", height: "100%", width: "100%", padding: "0" }}>
-          <div style={{ flexGrow: 1, height: "100%" }}
+          <div id="left" style={{ flexGrow: 1, height: "100%" }}
             onDragEnter={this.props.onDragEnter}
             onDragLeave={this.props.onDragLeave}></div>
-          <div style={{ flexGrow: 1, height: "100%" }}
+          <div id="right" style={{ flexGrow: 1, height: "100%" }}
             onDragEnter={this.props.onDragEnter}
             onDragLeave={this.props.onDragLeave}></div>
         </div>

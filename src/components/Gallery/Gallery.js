@@ -61,29 +61,23 @@ class Gallery extends React.Component {
     event.dataTransfer.setData("draggedImg", JSON.stringify(img));
   };
   onDragEnter = (event) => {
-    const before = this.calcDropPlace(event, event.target.parentNode)
-    event.currentTarget.classList.add(before ? "over-left" : "over-right")
+    const side = event.currentTarget.id
+    event.currentTarget.classList.add(`over-${side}`)
   }
   onDragLeave = (event) => {
-    event.currentTarget.classList.remove("over-right")
-    event.currentTarget.classList.remove("over-left")
+    const side = event.currentTarget.id
+    event.currentTarget.classList.remove(`over-${side}`)
   }
   onDragOver = (event) => {
     event.preventDefault();
   };
-  calcDropPlace = (event, target) => {
-    const distanceIntoPhoto =
-      event.screenX % target.offsetWidth;
-    const halfWayIntoPhoto = target.offsetWidth / 2;
-    return distanceIntoPhoto <= halfWayIntoPhoto;
-  };
-  reOrderList = (draggedImg, imgDroppedOver, before) => {
+  reOrderList = (draggedImg, imgDroppedOver, side) => {
     const tempImages = this.state.images;
     tempImages.splice(
       tempImages.findIndex((img) => img.id === draggedImg.id),
       1
     );
-    if (before) {
+    if (side === "left") {
       tempImages.splice(
         tempImages.findIndex((img) => img === imgDroppedOver),
         0,
@@ -100,11 +94,11 @@ class Gallery extends React.Component {
   };
   onDrop = (event, imgDroppedOver) => {
     const draggedImg = JSON.parse(event.dataTransfer.getData("draggedImg"));
-    event.currentTarget.classList.remove("over-right")
-    event.currentTarget.classList.remove("over-left")
+    if (document.querySelector('.over-right')) document.querySelector('.over-right').classList.remove("over-right")
+    if (document.querySelector('.over-left')) document.querySelector('.over-left').classList.remove("over-left")
     if (draggedImg.id === imgDroppedOver.id) return;
-    const before = this.calcDropPlace(event, event.currentTarget);
-    const tempImages = this.reOrderList(draggedImg, imgDroppedOver, before);
+    const side = event.currentTarget.id
+    const tempImages = this.reOrderList(draggedImg, imgDroppedOver, side);
     this.setState({
       images: tempImages,
     });
