@@ -54,6 +54,10 @@ class Image extends React.Component {
           height: this.state.size + 'px',
           transform: `rotate(${this.state.deg}deg)`
         }}
+        draggable
+        onDragStart={this.props.onDragStart}
+        onDragOver={this.props.onDragOver}
+        onDrop={(event) => this.props.onDrop(event, this.props.dto)}
         >
         <Modal
           isOpen={this.state.modalIsOpen}
@@ -68,7 +72,15 @@ class Image extends React.Component {
             className="modal-content"
           ></img>
         </Modal>
-        <div style={{ transform: `rotate(-${this.state.deg}deg)` }}>
+        <div style={{ position: "absolute", display: "flex", height: "100%", width: "100%", padding: "0" }}>
+          <div style={{ flexGrow: 1, height: "100%" }}
+            onDragEnter={this.props.onDragEnter}
+            onDragLeave={this.props.onDragLeave}></div>
+          <div style={{ flexGrow: 1, height: "100%" }}
+            onDragEnter={this.props.onDragEnter}
+            onDragLeave={this.props.onDragLeave}></div>
+        </div>
+        <div id="buttons" style={{ transform: `rotate(-${this.state.deg}deg)` }}>
           <FontAwesome className="image-icon" name="sync-alt" title="rotate" onClick={() => this.setState((prevState) => ({ deg: prevState.deg + 90, }))} />
           <FontAwesome className="image-icon" name="trash-alt" title="delete" onClick={() => this.props.removePhoto(this.props.dto.id)} />
           <FontAwesome className="image-icon" name="expand" title="expand" onClick={() => this.setState({ modalIsOpen: true })} />

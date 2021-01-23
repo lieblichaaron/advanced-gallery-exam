@@ -7,7 +7,7 @@
   position: relative;
   border: 1px solid white;
 
-  > div {
+  > #buttons {
     visibility: hidden;
     background: rgba(0, 0, 0, 0.7);
     cursor: pointer;
@@ -27,7 +27,7 @@
     justify-content: center;
   }
 
-  &:hover > div {
+  &:hover > #buttons {
     visibility: visible;
   }
 
