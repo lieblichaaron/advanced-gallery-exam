@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import './Image.scss';
+import Modal from "react-modal";
+Modal.setAppElement("#app");
 
 class Image extends React.Component {
   static propTypes = {
@@ -14,7 +16,8 @@ class Image extends React.Component {
     this.calcImageSize = this.calcImageSize.bind(this);
     this.state = {
       size: 200,
-      deg: 0
+      deg: 0,
+      modalIsOpen: false
     };
   }
 
@@ -27,7 +30,9 @@ class Image extends React.Component {
       size
     });
   }
-
+  closeModal() {
+    this.setState({ modalIsOpen: false });
+  }
   componentDidMount() {
     this.calcImageSize();
   }
@@ -47,10 +52,23 @@ class Image extends React.Component {
           transform: `rotate(${this.state.deg}deg)`
         }}
         >
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={() => this.closeModal()}
+          shouldCloseOnOverlayClick={true}
+          className="modal"
+          overlayClassName="overlay"
+          contentLabel="Image Modal"
+        >
+          <img
+            src={this.urlFromDto(this.props.dto)}
+            className="modal-content"
+          ></img>
+        </Modal>
         <div style={{ transform: `rotate(-${this.state.deg}deg)` }}>
           <FontAwesome className="image-icon" name="sync-alt" title="rotate" onClick={() => this.setState((prevState) => ({ deg: prevState.deg + 90, }))} />
           <FontAwesome className="image-icon" name="trash-alt" title="delete" onClick={() => this.props.removePhoto(this.props.dto.id)} />
-          <FontAwesome className="image-icon" name="expand" title="expand"/>
+          <FontAwesome className="image-icon" name="expand" title="expand" onClick={() => this.setState({ modalIsOpen: true })} />
         </div>
       </div>
     );
