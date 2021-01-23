@@ -2,9 +2,9 @@ import axios from "axios";
 let initilized = false;
 
 /*function will return state to set*/
-export function getImages(tag, stateImages, serverPage, newTag) {
+export function getImages(tags, stateImages, serverPage, newTag) {
     return new Promise((resolve) => {
-        const getImagesUrl = `services/rest/?method=flickr.photos.search&api_key=522c1f9009ca3609bcbaf08545f067ad&tags=${tag}&tag_mode=any&per_page=100&format=json&nojsoncallback=1&page=${serverPage}&sort=interestingness-desc`;
+        const getImagesUrl = `services/rest/?method=flickr.photos.search&api_key=522c1f9009ca3609bcbaf08545f067ad&tags=${tags}&tag_mode=any&per_page=100&format=json&nojsoncallback=1&page=${serverPage}&sort=interestingness-desc`;
         const baseUrl = "https://api.flickr.com/";
         axios({
             url: getImagesUrl,

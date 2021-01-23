@@ -6,7 +6,7 @@ import { getImages } from "../../serverFuncs";
 
 class Gallery extends React.Component {
   static propTypes = {
-    tag: PropTypes.string
+    tag: PropTypes.array
   };
 
   constructor(props) {
@@ -24,7 +24,7 @@ class Gallery extends React.Component {
   getImagesFromServer = (newTag) => {
     this.setState({ loading: true });
     getImages(
-      newTag ? newTag : this.props.tag,
+      newTag ? newTag : this.props.tags.join(),
       this.state.images,
       this.state.serverPage,
       newTag
@@ -106,13 +106,13 @@ class Gallery extends React.Component {
 
   componentDidMount() {
     this.setState({ loading: true });
-    this.getImagesFromServer(this.props.tag)
+    this.getImagesFromServer(this.props.tags.join())
     this.setIntersectionObserver();
   }
 
   componentWillReceiveProps(props) {
     this.setState({ serverPage: 0, loading: true });
-    this.getImagesFromServer(props.tag);
+    this.getImagesFromServer(props.tags.join());
   }
 
   render() {
