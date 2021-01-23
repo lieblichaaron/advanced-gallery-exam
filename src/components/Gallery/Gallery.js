@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import Image from '../Image';
 import './Gallery.scss';
+import { getImages } from "../../serverFuncs";
 
 class Gallery extends React.Component {
   static propTypes = {
@@ -14,29 +14,24 @@ class Gallery extends React.Component {
     this.removePhoto = this.removePhoto.bind(this);
     this.state = {
       images: [],
+      loading: false,
+      serverPage: 0,
+      prevLoaderPlacement: 0,
     };
   }
 
-  getImages(tag) {
-    const getImagesUrl = `services/rest/?method=flickr.photos.search&api_key=522c1f9009ca3609bcbaf08545f067ad&tags=${tag}&tag_mode=any&per_page=100&format=json&nojsoncallback=1`;
-    const baseUrl = 'https://api.flickr.com/';
-    axios({
-      url: getImagesUrl,
-      baseURL: baseUrl,
-      method: 'GET'
-    })
-      .then(res => res.data)
-      .then(res => {
-        if (
-          res &&
-          res.photos &&
-          res.photos.photo &&
-          res.photos.photo.length > 0
-        ) {
-          this.setState({images: res.photos.photo});
-        }
-      });
-  }
+  /*newTag parameter will distinguish between call from tag or scroll*/
+  getImagesFromServer = (newTag) => {
+    this.setState({ loading: true });
+    getImages(
+      newTag ? newTag : this.props.tag,
+      this.state.images,
+      this.state.serverPage,
+      newTag
+      ).then((newState) => {
+        if (newState) this.setState(newState);
+    });
+  };
   removePhoto(photoId) {
     const tempImages = this.state.images;
     const newImages = tempImages.filter((img) => {
@@ -44,16 +39,32 @@ class Gallery extends React.Component {
     });
     this.setState({ images: newImages });
   }
+  setIntersectionObserver = () => {
+    this.observer = new IntersectionObserver(this.handleObserver.bind(this), {
+      root: null,
+      rootMargin: "0px",
+      threshold: .1,
+    });
+    this.observer.observe(document.getElementById("loadMore"));
+  };
+  handleObserver(entries) {
+    const loaderPlacement = entries[0].boundingClientRect.y;
+    if (this.state.prevLoaderPlacement > loaderPlacement) {
+      this.setState({ loading: true });
+      this.getImagesFromServer();
+    }
+    this.setState({ prevLoaderPlacement: loaderPlacement });
+  }
 
   componentDidMount() {
-    this.getImages(this.props.tag);
-    this.setState({
-      galleryWidth: document.body.clientWidth
-    });
+    this.setState({ loading: true });
+    this.getImagesFromServer(this.props.tag)
+    this.setIntersectionObserver();
   }
 
   componentWillReceiveProps(props) {
-    this.getImages(props.tag);
+    this.setState({ serverPage: 0, loading: true });
+    this.getImagesFromServer(props.tag);
   }
 
   render() {
@@ -62,6 +73,10 @@ class Gallery extends React.Component {
         {this.state.images.map(dto => {
           return <Image key={'image-' + dto.id} dto={dto} removePhoto={this.removePhoto} />;
         })}
+        <div id="loadMore" className="observed"></div>
+        <span style={{ display: this.state.loading ? "block" : "none" }}>
+          Loading...
+        </span>
       </div>
     );
   }
