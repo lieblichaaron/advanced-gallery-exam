@@ -31,3 +31,5 @@ Each image has three buttons that appear on mouse hover. You need to make them w
 - Be responsible for your code. You may consult with Google about the code you write but you will need to explain what you did.
 
 ## Good Luck!
+## Addition
+- Added input option for multiple tags to search. Tags are collected as an array and joined to the format that flickr's api accepts them in the query string.
