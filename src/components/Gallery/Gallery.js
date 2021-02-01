@@ -97,7 +97,7 @@ class Gallery extends React.Component {
     if (document.querySelector('.over-right')) document.querySelector('.over-right').classList.remove("over-right")
     if (document.querySelector('.over-left')) document.querySelector('.over-left').classList.remove("over-left")
     if (draggedImg.id === imgDroppedOver.id) return;
-    const side = event.currentTarget.id
+    const side = event.screenX % event.currentTarget.offsetWidth > event.currentTarget.offsetWidth / 2 ? "right" : "left"
     const tempImages = this.reOrderList(draggedImg, imgDroppedOver, side);
     this.setState({
       images: tempImages,
